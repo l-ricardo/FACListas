@@ -1,0 +1,37 @@
+.data
+str:
+	.string "\n"
+
+.text
+main:
+
+	# Le o primeiro número 
+	li a7,5 		# "load immediate" -> O registrador a7 recebe o numero 5
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (5: le inteiro e guarda em a0)
+	mv t0, a0		# "move" -> Move o que esta no registrador a0 para o registrador t0
+
+
+	# Le o segundo número 
+	li a7,5 		# "load immediate" -> O registrador a7 recebe o numero 5
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (5: le inteiro e guarda em a0)
+	mv t1, a0 		# "move" -> Move o que esta no registrador a0 para o registrador t1
+
+
+	# Soma
+	add t2, t0, t1 		# t2 = t0 + t1
+
+
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t2 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, str		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+
+	# Return 0
+  	li a0, 0   		# "load immediate" -> O registrador a0 recebe o numero 0
+  	li a7, 93 		# "load immediate" -> O registrador a7 recebe o numero 93
+  	ecall 			# Realiza a ação registrada em a7, usando a0 como recipiente (93: exit)

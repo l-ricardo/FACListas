@@ -1,0 +1,182 @@
+.data
+strADD:
+	.string "ADD: "
+strSUB:
+	.string "\nSUB: "
+strAND:
+	.string "\nAND: "
+strOR:
+	.string "\nOR: "
+strXOR:
+	.string "\nXOR: "
+strMASK:
+	.string "\nMASK: "
+strSLL:
+	.string "\nSLL("
+strSRL:
+	.string "\nSRL("
+strAUX:
+	.string "): "
+strLINE:
+	.string "\n"
+
+.text
+main:
+	############################################## Leitura ##############################################
+	# Le o primeiro número 
+	li a7,5 		# "load immediate" -> O registrador a7 recebe o numero 5
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (5: le inteiro e guarda em a0)
+	mv t0, a0		# "move" -> Move o que esta no registrador a0 para o registrador t0
+
+	# Le o segundo número 
+	li a7,5 		# "load immediate" -> O registrador a7 recebe o numero 5
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (5: le inteiro e guarda em a0)
+	mv t1, a0 		# "move" -> Move o que esta no registrador a0 para o registrador t1
+	
+	# Le o terceiro número 
+	li a7,5 		# "load immediate" -> O registrador a7 recebe o numero 5
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (5: le inteiro e guarda em a0)
+	mv t2, a0 		# "move" -> Move o que esta no registrador a0 para o registrador t2
+	
+
+	################################################ Soma ################################################
+	add t3, t0, t1 		# t3 = t0 + t1
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strADD		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+
+	############################################# Subtracao #############################################
+	sub t3, t0, t1 		# t3 = t0 - t1
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strSUB		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+
+	################################################ And ################################################
+	and t3, t0, t1 		# t3 = t0 && t1
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strAND		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+
+	################################################ Or ################################################
+	or t3, t0, t1 		# t3 = t0 || t1
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strOR		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+
+	################################################ Xor ################################################
+	xor t3, t0, t1 		# t3 = t0 XOR t1
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strXOR		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+
+	################################################ Mask ################################################
+	andi t4, t2, 31 	# Mascara c e 31
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strMASK		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t4 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+	################################################ Sll ################################################
+	sll t3, t0, t4 		# t3 = t0 sll m
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strSLL		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t4 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strAUX		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+
+	################################################ Srl ################################################
+	srl t3, t1, t4 		# t3 = t1 srl m
+	
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strSRL		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t4 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strAUX		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	# Imprime um numero na tela
+	li a7, 1 		# "load immediate" -> O registrador a7 recebe o numero 1
+	mv a0, t3 		# "move" -> Move o que esta no registrador t2 para o registrador a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, strLINE		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+	
+	
+	################################################ Fim ################################################
+	# Return 0
+  	li a0, 0   		# "load immediate" -> O registrador a0 recebe o numero 0
+  	li a7, 93 		# "load immediate" -> O registrador a7 recebe o numero 93
+  	ecall 			# Realiza a ação registrada em a7, usando a0 como recipiente (93: exit)

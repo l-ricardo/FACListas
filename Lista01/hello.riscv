@@ -1,0 +1,17 @@
+.data
+str:
+	.string "Ola Mundo\n"
+	
+.text
+main:
+
+	# Imprime a mensagem na tela
+	li a7, 4		# "load immediate" -> O registrador a7 recebe o numero 4
+	la a0, str		# "load address" -> Carrega o endereço de menssage em a0
+	ecall			# Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+
+
+	# Return 0
+  	li a0, 0   		# "load immediate" -> O registrador a0 recebe o numero 0
+  	li a7, 93 		# "load immediate" -> O registrador a7 recebe o numero 93
+  	ecall 			# Realiza a ação registrada em a7, usando a0 como recipiente (93: exit)

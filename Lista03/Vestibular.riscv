@@ -1,0 +1,69 @@
+.data
+gab:        .space 256       # Buffer de entrada para armazenar a primeira string
+res:        .space 256       # Buffer de entrada para armazenar a segunda string
+str:        .string "\n"
+
+.text
+main:
+    # Le o número de perguntas (n)
+    li a7, 5                 # "load immediate" -> O registrador a7 recebe o número 5
+    ecall                    # Realiza a ação registrada em a7, usando a0 como recipiente (5: le inteiro e guarda em a0)
+    mv a1, a0                # Salva o número de perguntas em a1
+    addi a1, a1, 2
+
+    # Le a primeira linha de string
+    la a0, gab
+    li a7, 8                 # "load immediate" -> O registrador a7 recebe o número 8
+    ecall                    # Realiza a ação registrada em a7, usando a0 como recipiente (8: le string e guarda em gabarito)
+
+    # Le a segunda linha de string
+    la a0, res
+    li a7, 8                 # "load immediate" -> O registrador a7 recebe o número 8
+    ecall                    # Realiza a ação registrada em a7, usando a0 como recipiente (8: le string e guarda em gabarito)
+    
+    # Inicia contador de respostas corretas
+    li t1, 0                 # Registrador t1 será usado para contar o número de respostas corretas
+    la t3, gab               # "load address" -> O registrador t3 recebe o endereço de gab
+    la t5, res               # "load address" -> O registrador t5 recebe o endereço de res
+
+    addi a1, a1, -2   
+    
+    loop:   
+        # Comparação da resposta com o gabarito
+        lbu t4, 0(t3)        # Carrega o caractere do gabarito em t4
+        lbu t6, 0(t5)        # Carrega o caractere da resposta em t6
+        
+        beq t4, t6, match    # Se resposta == gabarito[i], vai para acerto
+
+        j next_loop
+
+
+    match:
+        addi t1, t1, 1      # Aumenta 1 do número de respostas corretas (t1++)
+
+        j next_loop
+
+
+    next_loop:
+        addi t3, t3, 1      # Avança para o próximo caractere em gabarito 
+        addi t5, t5, 1      # Avança para o próximo caractere em resposta
+        addi a1, a1, -1     # Reduz 1 do número de perguntas que ainda falta comparar (a1--)
+        
+        beqz a1, end        # Se a1 (número de perguntas) for igual a 0, vai para end e encerra o programa
+        j loop
+
+    end:
+    # Imprime o número de respostas corretas
+    li a7, 1                # "load immediate" -> O registrador a7 recebe o número 1
+    mv a0, t1               # Move o número de respostas corretas para a0
+    ecall                   # Realiza a ação registrada em a7, usando a0 como recipiente (1: imprime inteiro guardado em a0)
+
+    # Imprime a mensagem na tela
+    li a7, 4                # "load immediate" -> O registrador a7 recebe o número 4
+    la a0, str              # "load address" -> Carrega o endereço da mensagem em a0
+    ecall                   # Realiza a ação registrada em a7, usando a0 como recipiente (4: imprime string guardada em a0)
+
+    # Return 0
+    li a0, 0		     # "load immediate" -> O registrador a0 recebe o numero 0
+    li a7, 93 		     # "load immediate" -> O registrador a7 recebe o numero 93
+    ecall 		     # Realiza a ação registrada em a7, usando a0 como recipiente (93: exit)

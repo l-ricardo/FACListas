@@ -1,0 +1,62 @@
+.data
+palavra:    .space 256
+str:        .string "\n"
+
+.text
+main:
+    # Leitura do número de letras
+    li a7, 5
+    ecall
+    mv t0, a0
+
+    # Leitura da palavra
+    la a0, palavra
+    mv a1, t0
+    addi a1, a1, 2                        # Chatisse do moj do \0 e \n
+    li a7, 8
+    ecall
+
+    la t5, palavra                        # Endereço inicial da palavra
+    add t6, t5, t0                        # Endereço final da palavra
+
+    # Inicializa a flag com 1
+    li t1, 1
+
+    loop:
+        bge t5, t6, end
+
+        lb t3, 0(t5)                       # Carrega o caractere da palavra em t3
+        lb t4, -1(t6)                      # Carrega o caractere do final da palavra em t4
+
+        beq t3, t4, next_loop              # Checa se os caracteres são iguais
+
+        # Se os caracteres forem diferentes
+        li t1, 0                           # Atualiza a flag para 0
+        j end
+
+    next_loop:
+        addi t5, t5, 1                     # Avança o ponteiro do início da palavra
+        addi t6, t6, -1                    # Recua o ponteiro do final da palavra
+        j loop
+
+    end:
+        # Imprime a flag
+        li a7, 1                           # "load immediate" -> O registrador a7 recebe o número 1
+        mv a0, t1                          # Move o valor da flag para a0
+        ecall                              # Realiza a chamada de sistema registrada em a7, usando a0 como argumento (1: imprime inteiro guardado em a0)
+
+        # Imprime a mensagem na tela
+        li a7, 4                           # "load immediate" -> O registrador a7 recebe o número 4
+        la a0, str                         # "load address" -> Carrega o endereço da mensagem em a0
+        ecall                              # Realiza a chamada de sistema registrada em a7, usando a0 como argumento (4: imprime string guardada em a0)
+
+        # Return 0
+        li a0, 0
+        li a7, 93
+        ecall
+
+
+
+
+
+

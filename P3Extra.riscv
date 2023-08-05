@@ -1,0 +1,119 @@
+.data
+quebralinha:    .asciz "\n"
+input:          .space 32
+output:         .space 44
+
+.section .rodata
+.align 4
+table32:        .asciz "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+
+.text
+main:
+    # Carrega o endereço de "input" em a0, lê a entrada e guarda em "input"
+    la a1, input
+    li a0, 0
+    li a2, 32
+    li a7, 63
+    ecall
+
+    # Carrega o endereço de "output" em a1
+    la a0, output
+
+    # Chama a função de codificação BASE32
+    jal ra, encode32
+
+    # Imprime o output
+    li a7, 4          # Código da chamada de sistema para write
+    la a0, output     # Endereço da string de saída
+    li a2, 44         # Tamanho da string de saída
+    ecall
+
+    # Imprime a \n na tela
+    li a7, 4
+    la a0, quebralinha
+    ecall
+
+    # Return 0
+    li a0, 0
+    li a7, 93
+    ecall
+
+
+encode32:
+    la t0, output     # Carrega o endereço da string de saída em t0
+    li t1, 0          # Contador de caracteres codificados
+    li t2, 0          # Contador de bits codificados
+    li t3, 0          # Valor acumulado dos bits codificados
+
+loop:
+    lbu t4, 0(a1)       # Carrega o próximo caractere da string de entrada
+
+    beqz t4, done       # Se o caractere for zero, chegamos ao fim da string
+
+    # Converte o caractere em sua representação binária
+    li t5, 7           # Contador de bits para percorrer o caractere
+
+char_to_bits:
+    andi t6, t4, 1     # Obtém o bit menos significativo do caractere
+    slli t3, t3, 1     # Desloca os bits acumulados para a esquerda
+    or t3, t3, t6      # Adiciona o próximo bit ao valor acumulado
+
+    srli t4, t4, 1     # Desloca o caractere para a direita
+
+    addi t5, t5, -1    # Decrementa o contador de bits
+
+    bnez t5, char_to_bits   # Se ainda não foram percorridos todos os bits do caractere, continue
+
+    addi t2, t2, 7     # Incrementa o contador de bits codificados
+	li s5,8
+    blt t2,s5, loop    # Se ainda não foram codificados 5 bits, continue para o próximo caractere
+
+    # Chegamos a 5 bits codificados, então podemos obter um caractere codificado
+    andi s0, t3, 0x1f   # Mantém apenas os 5 bits mais baixos
+
+    la s1, table32      # Carrega o endereço da tabela BASE32
+    add s1, s1, s0      # Adiciona o deslocamento ao endereço da tabela
+    lbu s0, 0(s1)       # Carrega o caractere correspondente da tabela BASE32
+
+    sb s0, 0(t0)        # Armazena o caractere codificado na string de saída
+    addi t0, t0, 1      # Atualiza o endereço da string de saída
+    addi t1, t1, 1      # Atualiza o contador de caracteres codificados
+
+    srli t3, t3, 5       # Remove os 5 bits mais baixos do valor acumulado
+    addi t2, t2, -5     # Decrementa o contador de bits codificados
+
+    j loop
+
+done:
+    # Verifica se ainda há bits codificados que precisam ser convertidos em caracteres codificados
+    bgtz t2, pad
+
+    li t4, 0x00        # Caractere de terminação nulo
+    sb t4, 0(t0)       # Armazena o caractere de terminação na string de saída
+
+    ret
+
+pad:
+    # Preenche os bits restantes com zeros
+    slli t3, t3, 5
+
+    addi t2, t2, 5      # Incrementa o contador de bits codificados para incluir os bits de preenchimento
+
+fill:
+    andi s0, t3, 0x1f   # Mantém apenas os 5 bits mais baixos
+
+    la s1, table32      # Carrega o endereço da tabela BASE32
+    add s1, s1, s0      # Adiciona o deslocamento ao endereço da tabela
+    lbu s0, 0(s1)       # Carrega o caractere correspondente da tabela BASE32
+
+    sb s0, 0(t0)        # Armazena o caractere codificado na string de saída
+    addi t0, t0, 1      # Atualiza o endereço da string de saída
+    addi t1, t1, 1      # Atualiza o contador de caracteres codificados
+
+    srli t3, t3, 5       # Remove os 5 bits mais baixos do valor acumulado
+    addi t2, t2, 5      # Incrementa o contador de bits codificados
+
+	li s4,8
+    blt t2, s4, fill     # Se ainda não foram codificados 8 bits de preenchimento, continue a preencher
+
+    j done
